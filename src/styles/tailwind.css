@@ -1,4 +1,2 @@
-@import 'tailwindcss' source(none);
-@source '../**/*.{js,ts,jsx,tsx}';
-
-@import 'tw-animate-css';
+/* Global styles — no Tailwind dependency */
+/* Angular CLI will process this through PostCSS */
