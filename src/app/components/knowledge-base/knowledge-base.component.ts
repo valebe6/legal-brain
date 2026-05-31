@@ -1,4 +1,5 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, computed } from '@angular/core';
+import { DocumentService } from '../../services/document.service';
 
 @Component({
   selector: 'app-knowledge-base',
@@ -89,10 +90,9 @@ import { Component, signal } from '@angular/core';
     <div class="kb-section">
       <div class="kb-inner">
         <h2>Base de Conocimiento</h2>
-        <p class="section-subtitle">Propiedad exclusiva y curaduría especializada</p>
+        <p class="section-subtitle">Propiedad exclusiva y curaduría especializada ({{ totalPages() }} páginas en total)</p>
 
         <div class="kb-grid">
-          <!-- Doctrina -->
           <div class="kb-card c1">
             <div class="kb-card-header">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#4a5fd8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -111,7 +111,6 @@ import { Component, signal } from '@angular/core';
             </ul>
           </div>
 
-          <!-- Leyes -->
           <div class="kb-card c2">
             <div class="kb-card-header">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#2a9d8f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -131,7 +130,6 @@ import { Component, signal } from '@angular/core';
             </ul>
           </div>
 
-          <!-- Jurisprudencia -->
           <div class="kb-card c4">
             <div class="kb-card-header">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#9b59b6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -159,23 +157,25 @@ import { Component, signal } from '@angular/core';
   `
 })
 export class KnowledgeBaseComponent {
-  readonly doctrina = signal<string[]>([
-    'Manual de Derecho Policivo Tomo I',
-    'Manual de Derecho Policivo Tomo II',
-    'Cartilla de Contratación del Aprovechamiento Económico del Espacio Público'
-  ]);
-  readonly leyes = signal<string[]>([
-    'Ley 1801 de 2016 (Código de Convivencia)',
-    'Ley 1437 de 2011 (CPACA)',
-    'Ley 1333 de 2009 (Ambiental)',
-    'Ley 1564 de 2012 (CGP)',
-    'Ley 2079 de 2021',
-    'Decreto 768 de 2025',
-    'Ley 2450 de 2025 (Ruido)',
-    'Ley 2474 de 2025 (Riesgo Animal)'
-  ]);
-  readonly jurisprudencia = signal<string[]>([
-    'SU-00157 de 2018 (Espacio Público)',
-    'C-241 de 2010 (Juicios Civiles de Policía)'
-  ]);
+  private readonly documentService = inject(DocumentService);
+
+  readonly totalPages = this.documentService.totalPages;
+
+  readonly doctrina = computed(() =>
+    this.documentService.documents()
+      .filter(doc => doc.category === 'doctrina')
+      .map(doc => `${doc.title} (${doc.pages} pág.)`)
+  );
+
+  readonly leyes = computed(() =>
+    this.documentService.documents()
+      .filter(doc => doc.category === 'ley')
+      .map(doc => `${doc.title} (${doc.pages} pág.)`)
+  );
+
+  readonly jurisprudencia = computed(() =>
+    this.documentService.documents()
+      .filter(doc => doc.category === 'jurisprudencia')
+      .map(doc => `${doc.title} (${doc.pages} pág.)`)
+  );
 }
