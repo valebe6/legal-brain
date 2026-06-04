@@ -1,0 +1,75 @@
+<div class="main-grid">
+  <div class="panel-card">
+    <h3 class="panel-title">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#2a9d8f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:1.25rem;height:1.25rem">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+      </svg>
+      Responder como Dr. Arango
+    </h3>
+
+    @if (resolvingQuestion) {
+      <form (submit)="submitResponse($event)">
+        <div class="form-group">
+          <label>Pregunta del Usuario</label>
+          <p style="font-size: 0.9rem; color: #4a5064; background: #f5f6fa; padding: 0.75rem; border-radius: 0.5rem; border: 1px solid #c0c4d0; margin: 0 0 1rem 0;">
+            "{{ resolvingQuestion.question }}"
+          </p>
+        </div>
+
+        <div class="form-group">
+          <label for="response-text">Respuesta Doctrinal</label>
+          <textarea
+            id="response-text"
+            class="form-control"
+            name="responseText"
+            [ngModel]="hitlResponseText"
+            (ngModelChange)="updateResponseText($event)"
+            required
+            placeholder="Redacte la respuesta doctrinal usando el enfoque del Modelo Categorial..."
+          ></textarea>
+        </div>
+
+        <button type="submit" class="btn-submit">
+          Inyectar Respuesta en la IA
+        </button>
+        <button type="button" class="btn-cancel" (click)="cancelResolve()">
+          Cancelar
+        </button>
+      </form>
+    } @else {
+      <p style="font-size: 0.95rem; color: #4a5064; text-align: center; padding: 1.5rem 0; margin: 0;">
+        Seleccione una consulta de la lista para redactar la respuesta y auto-entrenar el bot.
+      </p>
+    }
+  </div>
+
+  <div>
+    <div class="doc-list">
+      @for (q of pendingQuestions; track q.id) {
+        <div class="doc-item">
+          <div class="doc-info">
+            <div class="doc-title">"{{ q.question }}"</div>
+            <div class="doc-meta">
+              <span class="badge doctrina">Celular: {{ q.userPhone }}</span>
+              <span>•</span>
+              <span>{{ q.timestamp | date:'medium' }}</span>
+            </div>
+          </div>
+
+          <div class="doc-actions">
+            <button class="btn-action resolve" (click)="startResolve(q)">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 1rem; height: 1rem">
+                <polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+              </svg>
+              Responder
+            </button>
+          </div>
+        </div>
+      } @empty {
+        <div class="no-results">
+          No hay consultas pendientes de escalar al Asesor Humano. ¡La IA está completamente capacitada!
+        </div>
+      }
+    </div>
+  </div>
+</div>

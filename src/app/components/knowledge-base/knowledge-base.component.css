@@ -1,0 +1,76 @@
+.kb-section {
+  padding: 6rem 1.5rem;
+  background: linear-gradient(180deg, #e8eaf0 0%, rgba(212,215,224,0.3) 100%);
+}
+.kb-inner { max-width: 72rem; margin: 0 auto; }
+h2 {
+  font-size: 2.25rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 1rem;
+  color: #0f1419;
+}
+.section-subtitle {
+  color: #4a5064;
+  text-align: center;
+  margin-bottom: 4rem;
+  max-width: 42rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+.kb-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+@media (min-width: 768px) {
+  .kb-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* Hover colors override for the CardComponent inside this grid */
+app-card.c1:hover ::ng-deep .card { border-color: #4a5fd8; }
+app-card.c2:hover ::ng-deep .card { border-color: #2a9d8f; }
+app-card.c4:hover ::ng-deep .card { border-color: #9b59b6; }
+
+.kb-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+.kb-card-header svg {
+  width: 2rem;
+  height: 2rem;
+  flex-shrink: 0;
+}
+h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #0f1419;
+  margin: 0;
+}
+.kb-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.kb-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  color: #0f1419;
+}
+.bullet { font-weight: 700; margin-top: 0.1rem; flex-shrink: 0; }
+.text-sm-item { font-size: 0.875rem; }
+.kb-footer {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #c0c4d0;
+}
+.kb-footer p {
+  font-size: 0.875rem;
+  color: #4a5064;
+  font-style: italic;
+  margin: 0;
+}

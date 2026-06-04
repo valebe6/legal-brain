@@ -1,0 +1,98 @@
+<div class="hero">
+  <!-- Reusable Header component -->
+  <app-header 
+    (loginClick)="openLoginModal()" 
+    (adminNavClick)="scrollToAdmin()">
+  </app-header>
+
+  <div class="hero-inner">
+    <div class="hero-title-row">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hero-icon">
+        <path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/>
+        <path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z"/>
+        <path d="M12 5v14"/>
+      </svg>
+      <h1>El Cerebro Jurídico</h1>
+    </div>
+
+    <p class="hero-subtitle">
+      Asistente de Inteligencia Artificial especializado en Derecho Policivo Colombiano
+    </p>
+
+    <p class="hero-desc">
+      Base de conocimiento con <span class="highlight">29 documentos especializados</span> (~1,800 páginas)
+      incluyendo doctrina propia, leyes clave, decretos y jurisprudencia fundacional
+    </p>
+
+    <div class="hero-buttons">
+      <button class="btn-docs" (click)="scrollToDocs()">Ver Documentación</button>
+    </div>
+
+    <div class="hero-stats">
+      <div class="stat-card">
+        <div class="stat-number">29</div>
+        <div class="stat-label">Documentos</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">~1,800</div>
+        <div class="stat-label">Páginas</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">24h</div>
+        <div class="stat-label">Respuesta Humana</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Reusable Login Modal -->
+@if (showLoginModal()) {
+  <app-modal [size]="'sm'" (closeModal)="closeLoginModal()">
+    <div class="modal-avatar-wrapper">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+        <circle cx="12" cy="7" r="4"/>
+      </svg>
+    </div>
+
+    <form (submit)="submitLogin($event)" style="margin-top: 0.75rem;">
+      @if (loginError()) {
+        <div class="login-error">
+          {{ loginError() }}
+        </div>
+      }
+
+      <div class="form-group-modal">
+        <label for="username">Usuario</label>
+        <input
+          type="text"
+          id="username"
+          class="form-control-modal"
+          name="username"
+          [(ngModel)]="loginUsername"
+          required
+          autocomplete="username"
+          placeholder="admin"
+        />
+      </div>
+
+      <div class="form-group-modal">
+        <label for="password">Contraseña</label>
+        <input
+          type="password"
+          id="password"
+          class="form-control-modal"
+          name="password"
+          [(ngModel)]="loginPassword"
+          required
+          autocomplete="current-password"
+          placeholder="Contraseña"
+        />
+      </div>
+
+      <button type="submit" class="btn-login-submit">
+        Iniciar sesión
+      </button>
+    </form>
+  </app-modal>
+}

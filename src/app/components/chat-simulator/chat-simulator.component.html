@@ -1,0 +1,116 @@
+<!-- State 1: Closed - Show Floating Buttons -->
+@if (chatState() === 'closed') {
+  <div class="floating-buttons-wrapper">
+    <button class="floating-btn whatsapp" (click)="triggerWhatsApp()">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>
+      </svg>
+      Iniciar chat de WhatsApp
+    </button>
+    <button class="floating-btn ai" (click)="openChat()">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+      </svg>
+      Chat IA
+    </button>
+  </div>
+}
+
+<!-- State 2: Open - Show Chat Window -->
+@if (chatState() === 'open') {
+  <div class="chat-window-floating">
+    <div class="chat-window-header">
+      <div class="chat-header-profile">
+        <div class="avatar-circle">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+        </div>
+        <div class="chat-header-meta">
+          <span class="chat-bot-name">Asistente IA</span>
+          <span class="chat-bot-status">
+            <span class="status-dot"></span>
+            En línea
+          </span>
+        </div>
+      </div>
+
+      <div class="chat-header-actions">
+        <!-- Reset memory icon button -->
+        <button class="btn-header-action" (click)="resetSession()" title="Limpiar Memoria / Nueva Sesión">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 0.9rem; height: 0.9rem;">
+            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+            <path d="M3 3v5h5"/>
+          </svg>
+        </button>
+        <!-- Minimize window button -->
+        <button class="btn-header-action" (click)="minimizeChat()" title="Minimizar">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 0.9rem; height: 0.9rem;">
+            <line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+        </button>
+        <!-- Close window button -->
+        <button class="btn-header-action" (click)="closeChat()" title="Cerrar">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 0.9rem; height: 0.9rem;">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="chat-messages-area" #chatContainer>
+      @for (msg of messages(); track msg.timestamp) {
+        <app-chat-bubble 
+          [msg]="msg" 
+          [escalated]="hasEscalated(msg)"
+          (onEscalate)="escalate(msg, $event)">
+        </app-chat-bubble>
+      }
+    </div>
+
+    <!-- Modularized suggestions component -->
+    <app-chat-suggestions (selectSuggestion)="sendSuggestion($event)"></app-chat-suggestions>
+
+    <div class="chat-input-area">
+      <input
+        type="text"
+        class="chat-input"
+        placeholder="Escriba su consulta jurídica aquí..."
+        [(ngModel)]="userInput"
+        (keyup.enter)="sendInput()"
+      />
+      <button class="btn-send" (click)="sendInput()">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+}
+
+<!-- State 3: Minimized - Show Compact Header Bar -->
+@if (chatState() === 'minimized') {
+  <div class="chat-minimized-bar" (click)="openChat()">
+    <div class="minimized-info">
+      <div class="avatar-circle" style="width: 1.5rem; height: 1.5rem;">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width: 0.75rem; height: 0.75rem;">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+      </div>
+      <span>Asistente IA</span>
+      <span class="status-dot" style="width: 0.3rem; height: 0.3rem; margin-left: 0.25rem;"></span>
+    </div>
+    <div class="minimized-actions" (click)="$event.stopPropagation()">
+      <button class="btn-mini-action" (click)="openChat()" title="Expandir">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 0.8rem; height: 0.8rem;">
+          <polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/>
+        </svg>
+      </button>
+      <button class="btn-mini-action" (click)="closeChat()" title="Cerrar">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 0.8rem; height: 0.8rem;">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+}
