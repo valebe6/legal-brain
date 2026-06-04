@@ -8,92 +8,103 @@ import { ChatService, ChatMessage } from '../../services/chat.service';
   standalone: true,
   imports: [FormsModule, DatePipe],
   styles: [`
-    .chat-section {
-      padding: 6rem 1.5rem;
-      background: linear-gradient(180deg, rgba(212,215,224,0.3) 0%, #e8eaf0 100%);
-      border-bottom: 1px solid #c0c4d0;
+    /* Floating Buttons Wrapper */
+    .floating-buttons-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.75rem;
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      z-index: 99;
     }
-    .chat-inner {
-      max-width: 72rem;
-      margin: 0 auto;
+    
+    .floating-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.25rem;
+      border-radius: 9999px;
+      border: none;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.15), 0 4px 6px -2px rgba(0,0,0,0.05);
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    h2 {
-      font-size: 2.25rem;
-      font-weight: 700;
-      text-align: center;
-      margin-bottom: 0.5rem;
-      color: #1a1d3a;
+    
+    .floating-btn.whatsapp {
+      background-color: #2a9d8f;
+      color: #ffffff;
     }
-    .section-subtitle {
-      color: #4a5064;
-      text-align: center;
-      margin-bottom: 3rem;
-      font-size: 1.1rem;
+    .floating-btn.whatsapp:hover {
+      background-color: rgba(42, 157, 143, 0.9);
+      transform: translateY(-2px);
     }
-    .web-chat-card {
-      display: grid;
-      grid-template-columns: 1fr;
+    
+    .floating-btn.ai {
+      background-color: #1a1d3a;
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .floating-btn.ai:hover {
+      background-color: #2a2e4d;
+      transform: translateY(-2px);
+      border-color: #e9b44c;
+    }
+    
+    .floating-btn svg {
+      width: 1.25rem;
+      height: 1.25rem;
+    }
+    
+    /* Floating Chat Window */
+    .chat-window-floating {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      width: 380px;
+      height: 580px;
       background: #111424;
       border: 2px solid #c0c4d0;
       border-radius: 0.75rem;
-      height: 580px;
-      overflow: hidden;
-      box-shadow: 0 15px 30px rgba(0,0,0,0.1);
-    }
-    @media (min-width: 768px) {
-      .web-chat-card {
-        grid-template-columns: 240px 1fr;
-      }
-    }
-    .chat-sidebar {
-      background: #171a2e;
-      border-right: 1px solid rgba(255,255,255,0.08);
-      display: none;
-      flex-direction: column;
-      height: 100%;
-      overflow-y: auto;
-    }
-    @media (min-width: 768px) {
-      .chat-sidebar {
-        display: flex;
-      }
-    }
-    .sidebar-header {
-      padding: 1.25rem 1rem;
-      font-size: 0.875rem;
-      font-weight: 600;
-      color: rgba(255,255,255,0.6);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-      flex-shrink: 0;
-    }
-    .chat-list {
       display: flex;
       flex-direction: column;
-      gap: 0.25rem;
-      padding: 0.5rem;
-      overflow-y: auto;
+      overflow: hidden;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.25), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+      z-index: 100;
+      animation: slideUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
-    .chat-list-item {
+    
+    @media (max-width: 480px) {
+      .chat-window-floating {
+        bottom: 1rem;
+        right: 1rem;
+        width: calc(100vw - 2rem);
+        height: calc(100vh - 2rem);
+      }
+    }
+    
+    .chat-window-header {
+      background: #1a1d3a;
+      padding: 0.875rem 1rem;
       display: flex;
       align-items: center;
-      gap: 0.75rem;
-      padding: 0.75rem;
-      border-radius: 0.5rem;
-      cursor: pointer;
-      transition: background-color 0.15s ease;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      flex-shrink: 0;
     }
-    .chat-list-item:hover {
-      background-color: rgba(255,255,255,0.05);
+    
+    .chat-header-profile {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
-    .chat-list-item.active {
-      background-color: rgba(255,255,255,0.08);
-      border-left: 3px solid #2a9d8f;
-    }
+    
     .avatar-circle {
-      width: 2.25rem;
-      height: 2.25rem;
+      width: 2rem;
+      height: 2rem;
       border-radius: 50%;
       background: #2a2e4d;
       display: flex;
@@ -104,72 +115,31 @@ import { ChatService, ChatMessage } from '../../services/chat.service';
       flex-shrink: 0;
     }
     .avatar-circle svg {
-      width: 1.125rem;
-      height: 1.125rem;
+      width: 1rem;
+      height: 1rem;
     }
-    .avatar-circle.reset-avatar {
-      background: rgba(196,30,58,0.1);
-      border-color: #c41e3a;
-      color: #c41e3a;
-    }
-    .chat-item-info {
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-    .chat-item-name {
-      font-size: 0.875rem;
-      font-weight: 600;
-      color: #ffffff;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-    }
-    .chat-item-status {
-      font-size: 0.75rem;
-      color: #2a9d8f;
-    }
-    .chat-item-sub {
-      font-size: 0.75rem;
-      color: #4a5064;
-    }
-    .chat-window {
-      display: flex;
-      flex-direction: column;
-      background: #111424;
-      height: 100%;
-      overflow: hidden;
-    }
-    .chat-window-header {
-      background: #1a1d3a;
-      padding: 1rem 1.25rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-      flex-shrink: 0;
-    }
-    .chat-header-profile {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
+    
     .chat-header-meta {
       display: flex;
       flex-direction: column;
     }
+    
     .chat-bot-name {
-      font-size: 0.95rem;
+      font-size: 0.875rem;
       font-weight: 600;
       color: #ffffff;
+      line-height: 1.2;
     }
+    
     .chat-bot-status {
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       color: #2a9d8f;
       display: flex;
       align-items: center;
       gap: 0.25rem;
       font-weight: 500;
     }
+    
     .status-dot {
       width: 0.375rem;
       height: 0.375rem;
@@ -177,38 +147,108 @@ import { ChatService, ChatMessage } from '../../services/chat.service';
       border-radius: 50%;
       display: inline-block;
     }
-    .btn-session-reset {
-      background: rgba(255,255,255,0.1);
-      border: 1px solid rgba(255,255,255,0.15);
-      color: #ffffff;
-      padding: 0.5rem 1rem;
-      border-radius: 0.5rem;
-      font-size: 0.8rem;
-      font-weight: 600;
+    
+    .chat-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    
+    .btn-header-action {
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.6);
+      width: 1.75rem;
+      height: 1.75rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       cursor: pointer;
       transition: all 0.15s ease;
     }
-    .btn-session-reset:hover {
-      background: #c41e3a;
-      border-color: #c41e3a;
+    .btn-header-action:hover {
+      color: #ffffff;
+      background-color: rgba(255,255,255,0.1);
     }
+    
+    /* Minimized Bar Styles */
+    .chat-minimized-bar {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      width: 260px;
+      background: #1a1d3a;
+      border: 2px solid #c0c4d0;
+      border-radius: 9999px;
+      padding: 0.625rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.15);
+      cursor: pointer;
+      z-index: 100;
+      transition: all 0.2s ease;
+      animation: popIn 0.2s ease-out;
+    }
+    .chat-minimized-bar:hover {
+      transform: translateY(-2px);
+      border-color: #e9b44c;
+    }
+    
+    .minimized-info {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #ffffff;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    
+    .minimized-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    
+    .btn-mini-action {
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.6);
+      cursor: pointer;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 50%;
+      transition: all 0.15s ease;
+    }
+    .btn-mini-action:hover {
+      color: #ffffff;
+      background-color: rgba(255,255,255,0.1);
+    }
+    
+    /* Message Area */
     .chat-messages-area {
       flex: 1 1 0%;
       min-height: 0;
-      padding: 1.5rem;
+      padding: 1rem;
       overflow-y: auto;
       background: #111424;
       display: flex;
       flex-direction: column;
-      gap: 1rem;
+      gap: 0.875rem;
       scroll-behavior: smooth;
     }
+    
     .msg-bubble {
-      max-width: 75%;
-      padding: 0.875rem 1rem;
+      max-width: 85%;
+      padding: 0.75rem 0.875rem;
       border-radius: 0.75rem;
-      font-size: 0.9rem;
-      line-height: 1.5;
+      font-size: 0.875rem;
+      line-height: 1.45;
       position: relative;
       display: flex;
       flex-direction: column;
@@ -229,39 +269,41 @@ import { ChatService, ChatMessage } from '../../services/chat.service';
     }
     .msg-bubble.system {
       align-self: center;
-      max-width: 90%;
+      max-width: 95%;
       background: rgba(233,180,76,0.1);
       border: 1px solid rgba(233,180,76,0.2);
       color: #e9b44c;
       text-align: center;
-      font-size: 0.8rem;
-      padding: 0.625rem 1rem;
+      font-size: 0.75rem;
+      padding: 0.5rem 0.75rem;
       border-radius: 0.5rem;
       font-weight: 500;
     }
     .msg-time {
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       align-self: flex-end;
       opacity: 0.65;
       margin-top: 0.125rem;
     }
+    
     .escalation-box {
-      margin-top: 0.75rem;
+      margin-top: 0.5rem;
       background: rgba(255,255,255,0.04);
       border: 1px solid rgba(255,255,255,0.1);
       border-radius: 0.5rem;
-      padding: 0.75rem;
+      padding: 0.5rem;
       display: flex;
       flex-direction: column;
-      gap: 0.625rem;
+      gap: 0.5rem;
     }
     .escalation-input {
       background: #111424;
       border: 1px solid rgba(255,255,255,0.15);
       color: #ffffff;
-      padding: 0.5rem;
+      padding: 0.375rem 0.5rem;
       border-radius: 0.375rem;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
+      width: 100%;
     }
     .escalation-input:focus {
       outline: none;
@@ -271,32 +313,38 @@ import { ChatService, ChatMessage } from '../../services/chat.service';
       background: #e9b44c;
       color: #111424;
       border: none;
-      padding: 0.5rem;
+      padding: 0.375rem;
       border-radius: 0.375rem;
       font-weight: 600;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       cursor: pointer;
       transition: background-color 0.15s ease;
     }
     .btn-escalate:hover {
       background: rgba(233,180,76,0.9);
     }
+    
+    /* Suggestions Area */
     .chips-container {
       flex-shrink: 0;
-      padding: 0.75rem 1.25rem;
+      padding: 0.5rem 0.75rem;
       background: #111424;
       display: flex;
-      gap: 0.5rem;
+      gap: 0.375rem;
       overflow-x: auto;
       white-space: nowrap;
       border-top: 1px solid rgba(255,255,255,0.05);
+      scrollbar-width: none;
+    }
+    .chips-container::-webkit-scrollbar {
+      display: none;
     }
     .suggestion-chip {
       background: #2a2e4d;
       border: 1px solid rgba(255,255,255,0.1);
       color: #ffffff;
-      font-size: 0.8rem;
-      padding: 0.5rem 1rem;
+      font-size: 0.75rem;
+      padding: 0.375rem 0.75rem;
       border-radius: 9999px;
       cursor: pointer;
       transition: all 0.15s ease;
@@ -305,13 +353,16 @@ import { ChatService, ChatMessage } from '../../services/chat.service';
       background: #3a4060;
       border-color: #e9b44c;
     }
+    
+    /* Input Area */
     .chat-input-area {
       flex-shrink: 0;
       background: #1a1d3a;
-      padding: 1rem 1.25rem;
+      padding: 0.75rem 1rem;
       display: flex;
-      gap: 0.75rem;
+      gap: 0.5rem;
       border-top: 1px solid rgba(255,255,255,0.08);
+      align-items: center;
     }
     .chat-input {
       flex-grow: 1;
@@ -319,16 +370,16 @@ import { ChatService, ChatMessage } from '../../services/chat.service';
       border: 1px solid rgba(255,255,255,0.15);
       color: #ffffff;
       border-radius: 1.5rem;
-      padding: 0.625rem 1.25rem;
-      font-size: 0.9rem;
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
     }
     .chat-input:focus {
       outline: none;
       border-color: #2a9d8f;
     }
     .btn-send {
-      width: 2.5rem;
-      height: 2.5rem;
+      width: 2.25rem;
+      height: 2.25rem;
       border-radius: 50%;
       background: #2a9d8f;
       border: none;
@@ -341,128 +392,176 @@ import { ChatService, ChatMessage } from '../../services/chat.service';
       flex-shrink: 0;
     }
     .btn-send:hover {
-      background-color: rgba(42,157,143,0.9);
+      background-color: rgba(42, 157, 143, 0.9);
     }
     .btn-send svg {
-      width: 1.125rem;
-      height: 1.125rem;
+      width: 1rem;
+      height: 1rem;
       margin-left: 0.125rem;
+    }
+    
+    @keyframes slideUp {
+      from {
+        transform: translateY(30px) scale(0.95);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+    }
+    
+    @keyframes popIn {
+      from {
+        transform: scale(0.9);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
     }
   `],
   template: `
-    <div class="chat-section" id="ai-chat">
-      <div class="chat-inner">
-        <h2>Consola del Chat de IA</h2>
-        <p class="section-subtitle">Interactúe en tiempo real con el Asistente de IA y simule el canal oficial</p>
+    <!-- State 1: Closed - Show Floating Buttons -->
+    @if (chatState() === 'closed') {
+      <div class="floating-buttons-wrapper">
+        <button class="floating-btn whatsapp" (click)="triggerWhatsApp()">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>
+          </svg>
+          Iniciar chat de WhatsApp
+        </button>
+        <button class="floating-btn ai" (click)="openChat()">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          </svg>
+          Chat IA
+        </button>
+      </div>
+    }
 
-        <div class="web-chat-card">
-          <div class="chat-sidebar">
-            <div class="sidebar-header">
-              Canales Disponibles
+    <!-- State 2: Open - Show Chat Window -->
+    @if (chatState() === 'open') {
+      <div class="chat-window-floating">
+        <div class="chat-window-header">
+          <div class="chat-header-profile">
+            <div class="avatar-circle">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
             </div>
-            <div class="chat-list">
-              <div class="chat-list-item active">
-                <div class="avatar-circle">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                  </svg>
-                </div>
-                <div class="chat-item-info">
-                  <div class="chat-item-name">Cerebro Jurídico IA</div>
-                  <div class="chat-item-status">En línea</div>
-                </div>
-              </div>
-              <div class="chat-list-item" (click)="resetSession()">
-                <div class="avatar-circle reset-avatar">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
-                    <path d="M3 3v5h5"/>
-                  </svg>
-                </div>
-                <div class="chat-item-info">
-                  <div class="chat-item-name">Limpiar Memoria</div>
-                  <div class="chat-item-sub">Sesión Independiente</div>
-                </div>
-              </div>
+            <div class="chat-header-meta">
+              <span class="chat-bot-name">Asistente IA</span>
+              <span class="chat-bot-status">
+                <span class="status-dot"></span>
+                En línea
+              </span>
             </div>
           </div>
 
-          <div class="chat-window">
-            <div class="chat-window-header">
-              <div class="chat-header-profile">
-                <div class="avatar-circle">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                  </svg>
-                </div>
-                <div class="chat-header-meta">
-                  <span class="chat-bot-name">Cerebro Jurídico IA</span>
-                  <span class="chat-bot-status">
-                    <span class="status-dot"></span>
-                    En línea
-                  </span>
-                </div>
-              </div>
-
-              <button class="btn-session-reset" (click)="resetSession()" title="Simula Memoria Cero / Aislamiento Legal">
-                Nueva Sesión
-              </button>
-            </div>
-
-            <div class="chat-messages-area" #chatContainer>
-              @for (msg of messages(); track msg.timestamp) {
-                <div class="msg-bubble" [class]="msg.sender">
-                  <span>{{ msg.text }}</span>
-
-                  @if (msg.isHitlEscalation && !hasEscalated(msg)) {
-                    <div class="escalation-box">
-                      <input
-                        type="tel"
-                        class="escalation-input"
-                        placeholder="Número Celular (Device ID)"
-                        [(ngModel)]="userPhone"
-                      />
-                      <button class="btn-escalate" (click)="escalate(msg)">
-                        Confirmar y Escalar (HITL)
-                      </button>
-                    </div>
-                  }
-
-                  <span class="msg-time">{{ msg.timestamp | date:'shortTime' }}</span>
-                </div>
-              }
-            </div>
-
-            <div class="chips-container">
-              <button class="suggestion-chip" (click)="sendSuggestion('¿Qué opina del ruido y la Ley 2450?')">
-                Ley Ruido 🔊
-              </button>
-              <button class="suggestion-chip" (click)="sendSuggestion('¿Cuáles son los límites del espacio público en la SU-00157?')">
-                Espacio Público ⚖️
-              </button>
-              <button class="suggestion-chip" (click)="sendSuggestion('¿Cómo tramitar un divorcio express?')">
-                Divorcio (RAG Fuera) ❌
-              </button>
-            </div>
-
-            <div class="chat-input-area">
-              <input
-                type="text"
-                class="chat-input"
-                placeholder="Escriba su consulta jurídica aquí..."
-                [(ngModel)]="userInput"
-                (keyup.enter)="sendInput()"
-              />
-              <button class="btn-send" (click)="sendInput()">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
-                </svg>
-              </button>
-            </div>
+          <div class="chat-header-actions">
+            <!-- Reset memory icon button -->
+            <button class="btn-header-action" (click)="resetSession()" title="Limpiar Memoria / Nueva Sesión">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 0.9rem; height: 0.9rem;">
+                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                <path d="M3 3v5h5"/>
+              </svg>
+            </button>
+            <!-- Minimize window button -->
+            <button class="btn-header-action" (click)="minimizeChat()" title="Minimizar">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 0.9rem; height: 0.9rem;">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+              </svg>
+            </button>
+            <!-- Close window button -->
+            <button class="btn-header-action" (click)="closeChat()" title="Cerrar">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 0.9rem; height: 0.9rem;">
+                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </button>
           </div>
         </div>
+
+        <div class="chat-messages-area" #chatContainer>
+          @for (msg of messages(); track msg.timestamp) {
+            <div class="msg-bubble" [class]="msg.sender">
+              <span>{{ msg.text }}</span>
+
+              @if (msg.isHitlEscalation && !hasEscalated(msg)) {
+                <div class="escalation-box">
+                  <input
+                    type="tel"
+                    class="escalation-input"
+                    placeholder="Número Celular (Device ID)"
+                    [(ngModel)]="userPhone"
+                  />
+                  <button class="btn-escalate" (click)="escalate(msg)">
+                    Confirmar y Escalar (HITL)
+                  </button>
+                </div>
+              }
+
+              <span class="msg-time">{{ msg.timestamp | date:'shortTime' }}</span>
+            </div>
+          }
+        </div>
+
+        <div class="chips-container">
+          <button class="suggestion-chip" (click)="sendSuggestion('¿Qué opina del ruido y la Ley 2450?')">
+            Ley Ruido 🔊
+          </button>
+          <button class="suggestion-chip" (click)="sendSuggestion('¿Cuáles son los límites del espacio público en la SU-00157?')">
+            Espacio Público ⚖️
+          </button>
+          <button class="suggestion-chip" (click)="sendSuggestion('¿Cómo tramitar un divorcio express?')">
+            Divorcio (RAG Fuera) ❌
+          </button>
+        </div>
+
+        <div class="chat-input-area">
+          <input
+            type="text"
+            class="chat-input"
+            placeholder="Escriba su consulta jurídica aquí..."
+            [(ngModel)]="userInput"
+            (keyup.enter)="sendInput()"
+          />
+          <button class="btn-send" (click)="sendInput()">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+            </svg>
+          </button>
+        </div>
       </div>
-    </div>
+    }
+
+    <!-- State 3: Minimized - Show Compact Header Bar -->
+    @if (chatState() === 'minimized') {
+      <div class="chat-minimized-bar" (click)="openChat()">
+        <div class="minimized-info">
+          <div class="avatar-circle" style="width: 1.5rem; height: 1.5rem;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width: 0.75rem; height: 0.75rem;">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+          </div>
+          <span>Asistente IA</span>
+          <span class="status-dot" style="width: 0.3rem; height: 0.3rem; margin-left: 0.25rem;"></span>
+        </div>
+        <div class="minimized-actions" (click)="$event.stopPropagation()">
+          <button class="btn-mini-action" (click)="openChat()" title="Expandir">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 0.8rem; height: 0.8rem;">
+              <polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/>
+            </svg>
+          </button>
+          <button class="btn-mini-action" (click)="closeChat()" title="Cerrar">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 0.8rem; height: 0.8rem;">
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    }
   `
 })
 export class ChatSimulatorComponent implements AfterViewChecked {
@@ -470,6 +569,7 @@ export class ChatSimulatorComponent implements AfterViewChecked {
 
   @ViewChild('chatContainer') private chatContainer!: ElementRef;
 
+  readonly chatState = signal<'closed' | 'open' | 'minimized'>('closed');
   readonly messages = this.chatService.messages;
   userInput = '';
   userPhone = '';
@@ -481,9 +581,23 @@ export class ChatSimulatorComponent implements AfterViewChecked {
   }
 
   private scrollToBottom(): void {
-    try {
-      this.chatContainer.nativeElement.scrollTop = this.chatContainer.nativeElement.scrollHeight;
-    } catch {}
+    if (this.chatState() === 'open' && this.chatContainer) {
+      try {
+        this.chatContainer.nativeElement.scrollTop = this.chatContainer.nativeElement.scrollHeight;
+      } catch {}
+    }
+  }
+
+  openChat(): void {
+    this.chatState.set('open');
+  }
+
+  minimizeChat(): void {
+    this.chatState.set('minimized');
+  }
+
+  closeChat(): void {
+    this.chatState.set('closed');
   }
 
   sendInput(): void {
@@ -526,5 +640,9 @@ export class ChatSimulatorComponent implements AfterViewChecked {
   resetSession(): void {
     this.chatService.clearChatHistory();
     this.escalatedMessages.clear();
+  }
+
+  triggerWhatsApp(): void {
+    alert('Simulando redirección a WhatsApp Business del Cerebro Jurídico...');
   }
 }
