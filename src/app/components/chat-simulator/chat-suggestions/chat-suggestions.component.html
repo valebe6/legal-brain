@@ -1,0 +1,7 @@
+<div class="chips-container">
+  @for (suggestion of suggestions(); track suggestion.label) {
+    <button class="suggestion-chip" (click)="clickChip(suggestion.query)">
+      {{ suggestion.label }}
+    </button>
+  }
+</div>

@@ -1,0 +1,19 @@
+<div class="msg-bubble" [class]="msg.sender">
+  <span>{{ msg.text }}</span>
+
+  @if (msg.isHitlEscalation && !escalated) {
+    <div class="escalation-box">
+      <input
+        type="tel"
+        class="escalation-input"
+        placeholder="Número Celular (Device ID)"
+        [(ngModel)]="userPhone"
+      />
+      <button class="btn-escalate" (click)="escalate()">
+        Confirmar y Escalar (HITL)
+      </button>
+    </div>
+  }
+
+  <span class="msg-time">{{ msg.timestamp | date:'shortTime' }}</span>
+</div>

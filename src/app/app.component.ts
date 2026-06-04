@@ -20,22 +20,8 @@ import { AuthService } from './services/auth.service';
     PricingComponent,
     FooterComponent
   ],
-  styles: [`
-    :host {
-      display: block;
-    }
-  `],
-  template: `
-    <app-hero></app-hero>
-    <app-features></app-features>
-    <app-knowledge-base></app-knowledge-base>
-    @if (authService.isAdmin()) {
-      <app-document-manager></app-document-manager>
-    }
-    <app-pricing></app-pricing>
-    <app-footer></app-footer>
-    <app-chat-simulator></app-chat-simulator>
-  `
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.css'
 })
 export class AppComponent {
   public readonly authService = inject(AuthService);

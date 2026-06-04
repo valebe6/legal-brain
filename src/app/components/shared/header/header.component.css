@@ -1,0 +1,79 @@
+.hero-header {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  left: 1.5rem;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 1rem;
+  z-index: 40;
+}
+
+.admin-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.admin-badge {
+  background-color: #e9b44c;
+  color: #1a1d3a;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.25rem 0.625rem;
+  border-radius: 9999px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.btn-admin-nav {
+  background-color: #2a9d8f;
+  color: #ffffff;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+.btn-admin-nav:hover {
+  background-color: rgba(42, 157, 143, 0.85);
+  transform: translateY(-1px);
+}
+
+.btn-login-trigger {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: #ffffff;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.btn-login-trigger:hover {
+  background: rgba(255,255,255,0.2);
+  border-color: rgba(255,255,255,0.4);
+  transform: scale(1.05);
+}
+
+.btn-logout {
+  background: rgba(196,30,58,0.15);
+  border: 1px solid rgba(196,30,58,0.3);
+  color: #ffffff;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.btn-logout:hover {
+  background: rgba(196,30,58,0.3);
+}

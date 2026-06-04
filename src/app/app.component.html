@@ -1,0 +1,9 @@
+<app-hero></app-hero>
+<app-features></app-features>
+<app-knowledge-base></app-knowledge-base>
+@if (authService.isAdmin()) {
+  <app-document-manager></app-document-manager>
+}
+<app-pricing></app-pricing>
+<app-footer></app-footer>
+<app-chat-simulator></app-chat-simulator>
