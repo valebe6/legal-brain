@@ -1,0 +1,77 @@
+<div class="search-row">
+  <div class="search-input-wrapper">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="search-icon">
+      <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+    </svg>
+    <input
+      type="text"
+      class="form-control search-control"
+      placeholder="Buscar documentos..."
+      [ngModel]="searchQuery"
+      (ngModelChange)="updateSearchQuery($event)"
+    />
+  </div>
+
+  <div class="filter-tabs">
+    <button
+      class="filter-tab"
+      [class.active]="selectedCategory === 'all'"
+      (click)="selectCategory('all')"
+    >
+      Todos
+    </button>
+    <button
+      class="filter-tab"
+      [class.active]="selectedCategory === 'doctrina'"
+      (click)="selectCategory('doctrina')"
+    >
+      Doctrina
+    </button>
+    <button
+      class="filter-tab"
+      [class.active]="selectedCategory === 'ley'"
+      (click)="selectCategory('ley')"
+    >
+      Leyes y Decretos
+    </button>
+    <button
+      class="filter-tab"
+      [class.active]="selectedCategory === 'jurisprudencia'"
+      (click)="selectCategory('jurisprudencia')"
+    >
+      Jurisprudencia
+    </button>
+  </div>
+</div>
+
+<div class="doc-list">
+  @for (doc of documents; track doc.id) {
+    <div class="doc-item">
+      <div class="doc-info">
+        <div class="doc-title">{{ doc.title }}</div>
+        <div class="doc-meta">
+          <span class="badge" [class]="doc.category">{{ getCategoryLabel(doc.category) }}</span>
+          <span>•</span>
+          <span>{{ doc.pages }} páginas</span>
+        </div>
+      </div>
+
+      <div class="doc-actions">
+        <button class="btn-action edit" title="Editar" (click)="editDoc(doc)">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/>
+          </svg>
+        </button>
+        <button class="btn-action delete" title="Eliminar" (click)="deleteDoc(doc.id)">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  } @empty {
+    <div class="no-results">
+      No se encontraron documentos que coincidan con la búsqueda.
+    </div>
+  }
+</div>

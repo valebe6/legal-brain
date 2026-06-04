@@ -1,0 +1,74 @@
+<div class="admin-section" id="document-manager">
+  <div class="admin-inner">
+    <h2>Panel del Administrador</h2>
+    <p class="section-subtitle">Gestión del acervo de conocimiento y respuestas del Asesor Humano</p>
+
+    <div class="main-tab-bar">
+      <button
+        class="main-tab"
+        [class.active]="activeTab() === 'docs'"
+        (click)="activeTab.set('docs')"
+      >
+        Base de Conocimiento
+      </button>
+      <button
+        class="main-tab"
+        [class.active]="activeTab() === 'hitl'"
+        (click)="activeTab.set('hitl')"
+      >
+        Consultas Escaladas (HITL)
+        @if (pendingQuestions().length > 0) {
+          <span class="hitl-badge">{{ pendingQuestions().length }}</span>
+        }
+      </button>
+    </div>
+
+    @if (activeTab() === 'docs') {
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-val">{{ totalCount() }}</div>
+          <div class="stat-lbl">Documentos Totales</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val">{{ totalPages() | number }}</div>
+          <div class="stat-lbl">Páginas Totales</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val">{{ avgPages() | number:'1.0-0' }}</div>
+          <div class="stat-lbl">Páginas Promedio</div>
+        </div>
+      </div>
+
+      <div class="main-grid">
+        <app-upload-form
+          [editingId]="editingId()"
+          [formData]="formData"
+          (onSubmitForm)="onSubmit($event)"
+          (onCancelEdit)="cancelEdit()"
+        ></app-upload-form>
+
+        <div>
+          <app-document-list
+            [documents]="filteredDocuments()"
+            [searchQuery]="searchQuery()"
+            [selectedCategory]="selectedCategory()"
+            (onSearchQueryChange)="searchQuery.set($event)"
+            (onCategoryChange)="selectedCategory.set($event)"
+            (onEdit)="startEdit($event)"
+            (onDelete)="deleteDoc($event)"
+          ></app-document-list>
+        </div>
+      </div>
+    } @else {
+      <app-hitl-feedback
+        [pendingQuestions]="pendingQuestions()"
+        [resolvingQuestion]="resolvingQuestion()"
+        [hitlResponseText]="hitlResponseText"
+        (hitlResponseTextChange)="hitlResponseText = $event"
+        (onSubmitResponse)="onSubmitResponse()"
+        (onCancelResolve)="cancelResolve()"
+        (onStartResolve)="startResolve($event)"
+      ></app-hitl-feedback>
+    }
+  </div>
+</div>

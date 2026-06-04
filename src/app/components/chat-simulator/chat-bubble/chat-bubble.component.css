@@ -1,0 +1,85 @@
+:host {
+  display: contents; /* Ensure it doesn't disrupt parent layout */
+}
+.msg-bubble {
+  max-width: 85%;
+  padding: 0.75rem 0.875rem;
+  border-radius: 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  box-sizing: border-box;
+}
+.msg-bubble.user {
+  align-self: flex-end;
+  background: #2a9d8f;
+  color: #ffffff;
+  border-bottom-right-radius: 0.125rem;
+}
+.msg-bubble.bot {
+  align-self: flex-start;
+  background: #2a2e4d;
+  color: #ffffff;
+  border-bottom-left-radius: 0.125rem;
+  border: 1px solid rgba(255,255,255,0.05);
+}
+.msg-bubble.system {
+  align-self: center;
+  max-width: 95%;
+  background: rgba(233,180,76,0.1);
+  border: 1px solid rgba(233,180,76,0.2);
+  color: #e9b44c;
+  text-align: center;
+  font-size: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+}
+.msg-time {
+  font-size: 0.65rem;
+  align-self: flex-end;
+  opacity: 0.65;
+  margin-top: 0.125rem;
+}
+
+.escalation-box {
+  margin-top: 0.5rem;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.escalation-input {
+  background: #111424;
+  border: 1px solid rgba(255,255,255,0.15);
+  color: #ffffff;
+  padding: 0.375rem 0.5rem;
+  border-radius: 0.375rem;
+  font-size: 0.8rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+.escalation-input:focus {
+  outline: none;
+  border-color: #2a9d8f;
+}
+.btn-escalate {
+  background: #e9b44c;
+  color: #111424;
+  border: none;
+  padding: 0.375rem;
+  border-radius: 0.375rem;
+  font-weight: 600;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+.btn-escalate:hover {
+  background: rgba(233,180,76,0.9);
+}
