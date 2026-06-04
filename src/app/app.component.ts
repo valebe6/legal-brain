@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { HeroComponent } from './components/hero/hero.component';
 import { FeaturesComponent } from './components/features/features.component';
 import { KnowledgeBaseComponent } from './components/knowledge-base/knowledge-base.component';
@@ -6,6 +6,7 @@ import { ChatSimulatorComponent } from './components/chat-simulator/chat-simulat
 import { DocumentManagerComponent } from './components/document-manager/document-manager.component';
 import { PricingComponent } from './components/pricing/pricing.component';
 import { FooterComponent } from './components/footer/footer.component';
+import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -28,10 +29,14 @@ import { FooterComponent } from './components/footer/footer.component';
     <app-hero></app-hero>
     <app-features></app-features>
     <app-knowledge-base></app-knowledge-base>
-    <app-chat-simulator></app-chat-simulator>
-    <app-document-manager></app-document-manager>
+    @if (authService.isAdmin()) {
+      <app-document-manager></app-document-manager>
+    }
     <app-pricing></app-pricing>
     <app-footer></app-footer>
+    <app-chat-simulator></app-chat-simulator>
   `
 })
-export class AppComponent {}
+export class AppComponent {
+  public readonly authService = inject(AuthService);
+}
